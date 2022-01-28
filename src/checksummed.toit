@@ -14,8 +14,7 @@ class CheckSummedRtc:
     rtc_bytes := esp32.rtc_user_bytes
     checksum_ = rtc_bytes[CHECKSUM_OFFSET_..]
     bytes_ = rtc_bytes[..CHECKSUM_OFFSET_]
-    loaded_checksum := compute_checksum_
-    if loaded_checksum != checksum_:
+    if compute_checksum_ != checksum_:
       throw "INCONSISTENT"
 
   constructor.init value/int=0:
