@@ -5,7 +5,7 @@
 import crypto.crc32 show crc32
 import esp32
 
-class CheckSummedRtc:
+class ChecksummedRtc:
   bytes_/ByteArray
   checksum_/ByteArray
   static CHECKSUM_OFFSET_ ::= esp32.RTC_MEMORY_SIZE - 4
@@ -22,21 +22,20 @@ class CheckSummedRtc:
     bytes_ = rtc_bytes[..CHECKSUM_OFFSET_]
     checksum_ = rtc_bytes[CHECKSUM_OFFSET_..]
     bytes_.fill value
-    update_checksum
+    update_checksum_
 
   constructor.non_throwing value/int=0:
-    catch:
-      return CheckSummedRtc
-    return CheckSummedRtc.init value
+    catch: return ChecksummedRtc
+    return ChecksummedRtc.init value
+  do from/int=0 to/int=size [block]:
+    if not 0 <= from <= to <= size: throw "OUT_OF_BOUNDS"
 
-  do from/int=0 to/int=(bytes_.size - CHECKSUM_OFFSET_) [block]:
-    if not 0 <= from <= to <= bytes_.size - CHECKSUM_OFFSET_:
     try:
       block.call bytes_[from..to]
     finally:
-      update_checksum
+      update_checksum_
 
-  update_checksum -> none:
+  update_checksum_ -> none:
     checksum_.replace 0 compute_checksum_
 
   compute_checksum_ -> ByteArray:
