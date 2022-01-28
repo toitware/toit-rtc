@@ -1,0 +1,5 @@
+prefixes:
+  rtc_memory: ..
+packages:
+  ..:
+    path: ..
