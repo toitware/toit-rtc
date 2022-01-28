@@ -8,7 +8,7 @@ import esp32
 /**
 Checksummed RTC-backed byte array.
 
-The byte array is accessed with the $do method.
+Use $do to access the byte array.
 */
 class ChecksummedRtc:
   bytes_/ByteArray
@@ -30,7 +30,7 @@ class ChecksummedRtc:
   /**
   Constructs an initial checksummed RTC-backed byte array.
 
-  The byte array is filled with the given $value.
+  The byte array is filled with the given $value and the checksum updated.
   */
   constructor.init value/int=0:
     rtc_bytes := esp32.rtc_user_bytes
@@ -42,21 +42,23 @@ class ChecksummedRtc:
   /**
   Constructs an checksummed RTC-backed byte array.
 
-  If the byte contents in RTC memory matches the checksum, then the byte array is used as is.
-  Otherwise, the byte array is filled with the given value and the checksum updated.
+  If the byte contents in RTC memory matches the checksum, then RTC memory byte
+    contents is used as is.
+  Otherwise if the contents is corrupted, then the byte array is filled with
+    the given $value and the checksum updated.
   */
   constructor.non_throwing value/int=0:
     catch: return ChecksummedRtc
     return ChecksummedRtc.init value
 
-  /** Size of the byte array. */
+  /** Size of the available byte array. */
   size -> int:
     return CHECKSUM_OFFSET_
 
   /**
   Calls the $block with the RTC backed byte array as an argument.
 
-  After the call, the checksum is updated.
+  Updates the checksum after the call.
 
   The given $from and $to defines the slice given to the block. They must
     satisfy 0 <= from <= to <= $size.
