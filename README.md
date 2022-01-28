@@ -1,1 +1,2 @@
-# toit-rtc
+# RTC memory
+Utilities for RTC memory.
